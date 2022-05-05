@@ -4,7 +4,7 @@ An awesome project showing off some shop interfaces!
 
 # Setup
 
-This requires Docker to be installed on your computer.  The below steps assume you're on Linux or Mac.
+This requires Docker to be installed on your computer.  The below steps assume you're on Linux or Mac.  If you're on Windows then use WSL to run these commands.
 
 First you need to install the dependencies (including Sail):
 
