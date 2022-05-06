@@ -1,4 +1,4 @@
 <div>
     <livewire:ui.dialogs.delete />
-    <livewire:product.ui.dialog />
+    <livewire:product.ui.create-edit-dialog />
 </div>
