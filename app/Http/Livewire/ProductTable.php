@@ -25,16 +25,12 @@ class ProductTable extends DataTableComponent
     {
         return [
             Column::make("Name", "product_name")
-                ->sortable()
                 ->searchable(),
-            Column::make("Style", "style")
-                ->sortable(),
-            Column::make("Brand", "brand")
-                ->sortable(),
+            Column::make("Style", "style"),
+            Column::make("Brand", "brand"),
 
             // Library doesn't support hasMany relationships currently, so we need to trick the fetching of SKUs
-            Column::make("SKUs", "id")->format(fn($id, Product $product) => $product->skus->implode(", "))
-                ->sortable(),
+            Column::make("SKUs", "id")->format(fn($id, Product $product) => $product->skus->implode(", ")),
 
             Column::make('Actions')
                 ->label(fn ($row) => view('products.table.actions', compact('row'))),
@@ -44,6 +40,7 @@ class ProductTable extends DataTableComponent
     public function builder(): Builder
     {
         return Product::with('inventory')
-            ->whereUserId(auth()->user()->id);
+            ->whereUserId(auth()->user()->id)
+            ->orderBy('product_name', 'asc');
     }
 }

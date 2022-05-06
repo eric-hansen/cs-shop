@@ -38,7 +38,8 @@ class InventoryTable extends DataTableComponent
     public function builder(): Builder
     {
         return Inventory::join('products', 'products.id', 'inventories.product_id')
-            ->where('products.user_id', auth()->user()->id);
+            ->where('products.user_id', auth()->user()->id)
+            ->orderBy('products.product_name');
     }
 
     public function filters(): array

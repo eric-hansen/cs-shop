@@ -15,8 +15,15 @@ class OrderTable extends DataTableComponent
     {
         $this->setPrimaryKey('id');
 
-        $aggregates = $this->builder()->selectRaw('AVG(total_cents) AS average, SUM(total_cents) AS total')->first();
-        $statusTotals = $this->builder()->groupBy('order_status')->selectRaw('COUNT(orders.id) AS total, order_status')->get()->keyBy('order_status');
+        $aggregates = $this->builder(false)
+            ->selectRaw('AVG(total_cents) AS average, SUM(total_cents) AS total')
+            ->first();
+
+        $statusTotals = $this->builder(false)
+            ->groupBy('order_status')
+            ->selectRaw('COUNT(orders.id) AS total, order_status')
+            ->get()
+            ->keyBy('order_status');
 
         $statuses = collect();
 
@@ -42,26 +49,25 @@ class OrderTable extends DataTableComponent
                 ->searchable(),
             Column::make("Color", "inventory.color"),
             Column::make("Size", "inventory.size"),
-            Column::make("Order status", "order_status")
-                ->sortable(),
+            Column::make("Order status", "order_status"),
             Column::make("Total", "total_cents")
-                ->sortable()
                 ->format(fn ($value) => format_currency($value)),
-            Column::make("Transaction id", "transaction_id")
-                ->sortable(),
-            Column::make("Shipper name", "shipper_name")
-                ->sortable(),
-            Column::make("Tracking number", "tracking_number")
-                ->sortable(),
+            Column::make("Transaction id", "transaction_id"),
+            Column::make("Shipper name", "shipper_name"),
+            Column::make("Tracking number", "tracking_number"),
             Column::make("SKU", "inventory.sku")
                 ->searchable()
                 ->hideIf(true),
         ];
     }
     
-    public function builder(): Builder
+    public function builder($includeOrderBy = true): Builder
     {
-        return Order::join('products', 'products.id', 'orders.product_id')
+        $builder = Order::join('products', 'products.id', 'orders.product_id')
             ->where('products.user_id', auth()->user()->id);
+
+        if ($includeOrderBy) $builder->orderBy('name');
+
+        return $builder;
     }
 }
