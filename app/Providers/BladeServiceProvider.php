@@ -8,6 +8,6 @@ class BladeServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        \Blade::directive('currency', fn ($expression) => "<?php echo(number_format($expression, 2)); ?>");
+        \Blade::directive('currency', fn ($expression) => "<?php echo(format_currency($expression)); ?>");
     }
 }
