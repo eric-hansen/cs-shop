@@ -14,13 +14,18 @@ class ProductTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
+
+        $this->setConfigurableAreas([
+            'after-pagination' => 'products.table.footer',
+            'toolbar-right-start' => 'products.table.create_product_button',
+        ]);
     }
 
     public function columns(): array
     {
         return [
             Column::make("Name", "product_name")
-                ->sortable(),
+                ->sortable()->searchable(),
             Column::make("Style", "style")
                 ->sortable(),
             Column::make("Brand", "brand")
@@ -29,6 +34,9 @@ class ProductTable extends DataTableComponent
             // Library doesn't support hasMany relationships currently, so we need to trick the fetching of SKUs
             Column::make("SKUs", "id")->format(fn($id, Product $product) => $product->skus->implode(", "))
                 ->sortable(),
+
+            Column::make('Actions')
+                ->label(fn ($row) => view('products.table.actions', compact('row'))),
         ];
     }
 

@@ -43,3 +43,46 @@ If no errors occur you can now log in: `http://localhost/login`.
 # Logging In
 
 The passwords are hashed, but a user you can log in with is `larhonda.hovis@foo.com:cghmpbKXXK` (username:password).
+
+# FAQ
+
+**Q**: Why does the database seeder (`BaseSeeder`) load a local file?
+
+For performance.  The quickest I could get the seeder to run the `OrderSeeder` was about 110s (~1m 50s).
+
+This includes doing transactions, batching, exploring other CSV handler services (those caused worse performance than just using `str_getcsv`).
+
+It's not a normal route to go, for security and practical reasons.  But at the same time one doesn't run `artisan db:seed` in production (or shouldn't).  Collectively the seeding took about 2-3 minutes at it's fastest before writing it to load in the files to MySQL.  Now it takes ~1.5-2 seconds.
+
+Of course this is due to the amount of data that needs to be imported.  For comparison, the `users.csv` file takes ~200ms doing it any way besides loading it in.
+
+But to give you an idea, here's the output of `artisan db:seed`:
+
+```
+@1000 transactions per commit:
+
+Seeding: Database\Seeders\UserSeeder
+Seeded:  Database\Seeders\UserSeeder (88.89ms)
+Seeding: Database\Seeders\ProductSeeder
+Seeded:  Database\Seeders\ProductSeeder (11,177.48ms)
+Seeding: Database\Seeders\InventorySeeder
+Seeded:  Database\Seeders\InventorySeeder (30,629.46ms)
+Seeding: Database\Seeders\OrderSeeder
+Seeded:  Database\Seeders\OrderSeeder (110,739.71ms)
+
+LOAD DATA INFILE LOCAL:
+
+Seeding: Database\Seeders\UserSeeder
+Seeded:  Database\Seeders\UserSeeder (17.81ms)
+Seeding: Database\Seeders\ProductSeeder
+Seeded:  Database\Seeders\ProductSeeder (202.81ms)
+Seeding: Database\Seeders\InventorySeeder
+Seeded:  Database\Seeders\InventorySeeder (238.50ms)
+Seeding: Database\Seeders\OrderSeeder
+Seeded:  Database\Seeders\OrderSeeder (1,123.71ms)
+Database seeding completed successfully.
+```
+
+Security was the other aspect for/against this route.  Due to that, there are a couple of checks in place to first confirm the filename (sans `.csv`) should be processed.  Then we check the first line of the CSV file against the fillable properties on the table model.  If there's any outliers then we throw an exception.
+
+There's other cases that aren't considered (i.e.: a PNG being passed in), but given the control of these seeders is 1) by the developer only and 2) supposed to only be ran in non-production, as a MVP it does it's job well.

@@ -29,11 +29,15 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::middleware('auth.user_is_enabled')->group(function () {
+        Route::prefix('inventory')->group(function () {
+            Route::get('/', [InventoryController::class, 'index'])->name('inventory.index');
+        });
 
-    Route::prefix('orders')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+        Route::resource('products', ProductsController::class);
+
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+        });
     });
-
-    Route::resource('products', ProductsController::class);
 });

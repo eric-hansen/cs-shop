@@ -20,7 +20,8 @@
         </style>
         <!-- Scripts -->
         <script src="{{ mix('js/app.js') }}" defer></script>
-        <script src="//unpkg.com/alpinejs" defer></script>
+
+        <script src="//unpkg.com/flowbite@1.4.4/dist/flowbite.js"></script>
     </head>
     <body class="font-sans antialiased">
         <x-jet-banner />
@@ -39,6 +40,7 @@
 
             <!-- Page Content -->
             <main>
+            <livewire:ui.notifications.toast />
                 {{ $slot }}
             </main>
         </div>
@@ -46,7 +48,5 @@
         @stack('modals')
 
         @livewireScripts
-
-        <script src="//unpkg.com/flowbite@1.4.4/dist/flowbite.js"></script>
     </body>
 </html>
