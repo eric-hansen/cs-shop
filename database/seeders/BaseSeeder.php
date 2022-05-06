@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseSeeder extends Seeder
 {
     public string $model;
-    public string $table;
+    public string $filename;
 
-    protected function processCsvData($filename)
+    public function run()
     {
-        $fileWithPath = base_path('tests/Fixtures/' . $filename . '.csv');
+        $fileWithPath = base_path('tests/Fixtures/' . $this->filename);
 
         $filterValue = function ($value) {
             return trim(str_replace('"', '', $value));
@@ -25,7 +25,7 @@ abstract class BaseSeeder extends Seeder
         /** @var Model $seederModel */
         $seederModel = new $this->model();
 
-        if (!$this->isFileWhitelisted($filename) ||
+        if (!$this->isFileWhitelisted($this->filename) ||
 
             // Check to see if any of the model's properties don't exist in the first line of the given file
             collect($seederModel->getFillable())
@@ -38,7 +38,7 @@ abstract class BaseSeeder extends Seeder
             sprintf("LOAD DATA LOCAL INFILE '%s' IGNORE INTO TABLE %s
             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
             LINES TERMINATED BY '\\n'
-            IGNORE 1 LINES (%s)", 'tests/Fixtures/' . $filename . '.csv', $seederModel->getTable(), $data));
+            IGNORE 1 LINES (%s)", 'tests/Fixtures/' . $this->filename, $seederModel->getTable(), $data));
     }
 
     /**
@@ -52,7 +52,7 @@ abstract class BaseSeeder extends Seeder
     private function isFileWhitelisted(string $filename): bool
     {
         return match ($filename) {
-            'users', 'products', 'inventory', 'orders' => true,
+            'users.csv', 'products.csv', 'inventory.csv', 'orders.csv' => true,
             default => false,
         };
     }
