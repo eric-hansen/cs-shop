@@ -28,20 +28,24 @@ class InventoryTable extends DataTableComponent
             Column::make("Quantity", "quantity"),
             Column::make("Color", "color"),
             Column::make("Size", "size"),
-            Column::make("Price", "price_cents"),
-            Column::make("Cost", "cost_cents"),
+            Column::make("Price", "price_cents")
+                ->format(fn ($value) => format_currency($value)),
+            Column::make("Cost", "cost_cents")
+                ->format(fn ($value) => format_currency($value)),
         ];
     }
     
     public function builder(): Builder
     {
-        return Inventory::join('products', 'products.id', 'inventories.product_id')->where('products.user_id', auth()->user()->id);
+        return Inventory::join('products', 'products.id', 'inventories.product_id')
+            ->where('products.user_id', auth()->user()->id);
     }
 
     public function filters(): array
     {
         return [
-            NumberFilter::make('Quantity')->filter(fn(Builder $builder, string $value) => $builder->where('quantity', '<', $value)),
+            NumberFilter::make('Quantity Below  Threshold')
+                ->filter(fn(Builder $builder, string $value) => $builder->where('quantity', '<', $value)),
         ];
     }
 }

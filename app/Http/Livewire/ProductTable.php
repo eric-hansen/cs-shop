@@ -25,7 +25,8 @@ class ProductTable extends DataTableComponent
     {
         return [
             Column::make("Name", "product_name")
-                ->sortable()->searchable(),
+                ->sortable()
+                ->searchable(),
             Column::make("Style", "style")
                 ->sortable(),
             Column::make("Brand", "brand")
@@ -42,6 +43,7 @@ class ProductTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Product::with('inventory')->whereUserId(auth()->user()->id);
+        return Product::with('inventory')
+            ->whereUserId(auth()->user()->id);
     }
 }

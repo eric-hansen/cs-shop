@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\Product\Ui;
 
+use App\Http\Livewire\Ui\Notifications\Dialog as NotificationsDialog;
 use App\Models\Product;
 use Livewire\Component;
 
 class Dialog extends Component
 {
     public Product $product;
-    public bool $modal;
+    public bool $showModal;
     public int $modelId;
 
     protected $listeners = ['showProductDialog', 'confirmProduct'];
@@ -33,20 +34,20 @@ class Dialog extends Component
     {
         $this->validate();
 
-        $toastParams = [];
+        $dialogParams = [];
 
         $action = $this->product->getOriginal('id') ? 'update' : 'create';
 
         $this->product->user_id = auth()->user()->id;
         
         if ($this->product->save()) {
-            $toastParams = ['success', 'Product was ' . $action . 'd successfullly.'];
-            $this->modal = false;
+            $dialogParams = ['success', 'Product was ' . $action . 'd successfully.'];
+            $this->showModal = false;
         } else {
-            $toastParams = ['danger', 'Unable to ' . $action . ' product.  Please try again.'];
+            $dialogParams = ['danger', 'Unable to ' . $action . ' product.  Please try again.'];
         }
         
-        $this->emit('showToast', ...$toastParams);
+        $this->emitTo(NotificationsDialog::class, 'showMessage', ...$dialogParams);
 
         $this->emit('refreshDatatable');
     }
@@ -56,7 +57,7 @@ class Dialog extends Component
         $this->product = Product::findOrNew($productId);
         $this->modelId = optional($this->product)->id ?? $productId;
 
-        $this->modal = true;
+        $this->showModal = true;
     }
 
     public function render()

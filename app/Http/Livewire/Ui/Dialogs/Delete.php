@@ -2,11 +2,12 @@
 
 namespace App\Http\Livewire\Ui\Dialogs;
 
+use App\Http\Livewire\Ui\Notifications\Dialog;
 use Livewire\Component;
 
 class Delete extends Component
 {
-    public bool $modal = false;
+    public bool $showModal = false;
     public string $modelName = '';
     public int $modelId = 0;
     
@@ -18,21 +19,21 @@ class Delete extends Component
     {
         $this->loadModel($modelName, $modelId);
 
-        $this->modal = $shouldShow;
+        $this->showModal = $shouldShow;
     }
 
     public function deleteConfirmed(string $modelName, int $modelId)
     {
         $this->loadModel($modelName, $modelId);
 
-        $toastParams = [];
+        $dialogParams = [];
         
-        if ($this->model->delete()) $toastParams = ['success', ucwords($this->modelName) . ' was deleted successfullly.'];
-        else $toastParams = ['danger', 'Unable to delete ' . $this->modelName . '.  Please try again.'];
+        if ($this->model->delete()) $dialogParams = ['success', ucwords($this->modelName) . ' was deleted successfullly.'];
+        else $dialogParams = ['danger', 'Unable to delete ' . $this->modelName . '.  Please try again.'];
         
-        $this->emit('showToast', ...$toastParams);
+        $this->emitTo(Dialog::class, 'showMessage', ...$dialogParams);
 
-        $this->modal = false;
+        $this->showModal = false;
 
         $this->emit('refreshDatatable');
     }

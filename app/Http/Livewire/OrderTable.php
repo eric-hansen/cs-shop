@@ -45,19 +45,23 @@ class OrderTable extends DataTableComponent
             Column::make("Order status", "order_status")
                 ->sortable(),
             Column::make("Total", "total_cents")
-                ->sortable(),
+                ->sortable()
+                ->format(fn ($value) => format_currency($value)),
             Column::make("Transaction id", "transaction_id")
                 ->sortable(),
             Column::make("Shipper name", "shipper_name")
                 ->sortable(),
             Column::make("Tracking number", "tracking_number")
                 ->sortable(),
-            Column::make("SKU", "inventory.sku")->searchable()->hideIf(true),
+            Column::make("SKU", "inventory.sku")
+                ->searchable()
+                ->hideIf(true),
         ];
     }
     
     public function builder(): Builder
     {
-        return Order::join('products', 'products.id', 'orders.product_id')->where('products.user_id', auth()->user()->id);
+        return Order::join('products', 'products.id', 'orders.product_id')
+            ->where('products.user_id', auth()->user()->id);
     }
 }
