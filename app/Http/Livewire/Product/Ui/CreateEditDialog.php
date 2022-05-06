@@ -62,6 +62,6 @@ class CreateEditDialog extends Component
 
     public function render()
     {
-        return view('livewire.product.ui.dialog');
+        return view('livewire.product.ui.create_edit_dialog');
     }
 }
