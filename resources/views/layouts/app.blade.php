@@ -40,10 +40,11 @@
 
             <!-- Page Content -->
             <main>
-            <livewire:ui.notifications.toast />
                 {{ $slot }}
             </main>
         </div>
+        
+        <livewire:ui.notifications.dialog />
 
         @stack('modals')
 

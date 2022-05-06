@@ -1,5 +1,5 @@
 <div>
-    <x-jet-dialog-modal wire:model="modal">
+    <x-jet-dialog-modal wire:model="showModal">
         <x-slot name="title">
             {{ __('Product') }}
         </x-slot>
@@ -46,7 +46,7 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$toggle('modal')" wire:loading.attr="disabled">
+            <x-jet-secondary-button wire:click="$toggle('showModal')" wire:loading.attr="disabled">
                 {{ __('Cancel') }}
             </x-jet-secondary-button>
 
