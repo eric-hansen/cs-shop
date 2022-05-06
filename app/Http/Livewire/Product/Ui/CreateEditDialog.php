@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Product\Ui;
 
-use App\Http\Livewire\Ui\Notifications\Dialog as NotificationsDialog;
+use App\Http\Livewire\Ui\Notifications\Dialog;
 use App\Models\Product;
 use Livewire\Component;
 
-class Dialog extends Component
+class CreateEditDialog extends Component
 {
     public Product $product;
     public bool $showModal;
@@ -47,7 +47,7 @@ class Dialog extends Component
             $dialogParams = ['danger', 'Unable to ' . $action . ' product.  Please try again.'];
         }
         
-        $this->emitTo(NotificationsDialog::class, 'showMessage', ...$dialogParams);
+        $this->emitTo(Dialog::class, 'showMessage', ...$dialogParams);
 
         $this->emit('refreshDatatable');
     }
