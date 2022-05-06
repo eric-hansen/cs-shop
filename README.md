@@ -28,6 +28,8 @@ docker run --rm \
     php artisan sail:install 
 ```
 
+After this run `git stash` as the `sail:install` command overrides the `docker-compose.yml` file.
+
 # Running
 
 Now you can do `./vendor/bin/sail up` (optionally pass in `-d` to daemonize the startup).
@@ -83,6 +85,15 @@ Seeded:  Database\Seeders\OrderSeeder (1,123.71ms)
 Database seeding completed successfully.
 ```
 
-Security was the other aspect for/against this route.  Due to that, there are a couple of checks in place to first confirm the filename (sans `.csv`) should be processed.  Then we check the first line of the CSV file against the fillable properties on the table model.  If there's any outliers then we throw an exception.
+Security was the other aspect for/against this route.  Due to that, there are a couple of checks in place to first confirm the filename should be processed.  Then we check the first line of the CSV file against the fillable properties on the table model.  If there's any outliers then we throw an exception.
 
 There's other cases that aren't considered (i.e.: a PNG being passed in), but given the control of these seeders is 1) by the developer only and 2) supposed to only be ran in non-production, as a MVP it does it's job well.
+
+**Q**: Unable to connect to MySQL via Sail
+
+This may happen due to an app caching issue.  A few steps to try:
+
+* Run `./vendor/bin/sail artisan optimize`
+* Run `./vendor/bin/sail artisan`
+
+Both will build out a cache for the app appropriately.  While the above shouldn't be necessary (or this issue happen) you never know.
