@@ -54,7 +54,7 @@ The passwords are hashed, but a user you can log in with is `larhonda.hovis@foo.
 
 **Q**: I get an error saying that the key isn't generated.  Why?
 
-You need to run `./vendor/bin/sail artisan key:generate` after installing the composer dependencies (the first Docker command).
+You need to run `./vendor/bin/sail artisan key:generate` before using the app.  This key should always be unique to the application and not shared.
 
 **Q**: Why does the database seeder (`BaseSeeder`) load a local file?
 
