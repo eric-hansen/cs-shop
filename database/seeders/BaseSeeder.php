@@ -16,11 +16,7 @@ abstract class BaseSeeder extends Seeder
     {
         $fileWithPath = base_path('tests/Fixtures/' . $this->filename);
 
-        $filterValue = function ($value) {
-            return trim(str_replace('"', '', $value));
-        };
-
-        $data = $filterValue(File::lines($fileWithPath)->first());
+        $headerColumns = str_replace('"', '', trim((string)File::lines($fileWithPath)->first()));
 
         /** @var Model $seederModel */
         $seederModel = new $this->model();
@@ -29,7 +25,7 @@ abstract class BaseSeeder extends Seeder
 
             // Check to see if any of the model's properties don't exist in the first line of the given file
             collect($seederModel->getFillable())
-                ->diff(explode(",", $data))->isNotEmpty()
+                ->diff(explode(",", $headerColumns))->isNotEmpty()
         ) {
             throw new \InvalidArgumentException(sprintf('File [%s] is not supported by seeder.', $fileWithPath));
         }
@@ -38,7 +34,7 @@ abstract class BaseSeeder extends Seeder
             sprintf("LOAD DATA LOCAL INFILE '%s' IGNORE INTO TABLE %s
             FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
             LINES TERMINATED BY '\\n'
-            IGNORE 1 LINES (%s)", 'tests/Fixtures/' . $this->filename, $seederModel->getTable(), $data));
+            IGNORE 1 LINES (%s)", 'tests/Fixtures/' . $this->filename, $seederModel->getTable(), $headerColumns));
     }
 
     /**
