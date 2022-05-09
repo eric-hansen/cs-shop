@@ -4,7 +4,7 @@ An awesome project showing off some shop interfaces!
 
 # Setup
 
-This requires Docker to be installed on your computer.  The below steps assume you're on Linux or Mac.  If you're on Windows then use WSL to run these commands.
+This requires Docker & Docker Compose to be installed on your computer.  The below steps assume you're on Linux or Mac.  If you're on Windows then use WSL to run these commands.
 
 First you need to install the dependencies (including Sail):
 
@@ -16,6 +16,8 @@ docker run --rm \
     laravelsail/php81-composer:latest \
     composer install --ignore-platform-reqs
 ```
+
+Now copy over the `.env.example` to `.env`: `cp .env{.example,}`
 
 Now you need to register Sail and create the `./vendor/bin/sail` binary:
 
@@ -47,6 +49,10 @@ If no errors occur you can now log in: `http://localhost/login`.
 The passwords are hashed, but a user you can log in with is `larhonda.hovis@foo.com:cghmpbKXXK` (username:password).
 
 # FAQ
+
+**Q**: I get an error saying that the key isn't generated.  Why?
+
+You need to run `./vendor/bin/sail artisan key:generate` after installing the composer dependencies (the first Docker command).
 
 **Q**: Why does the database seeder (`BaseSeeder`) load a local file?
 
