@@ -32,6 +32,8 @@ docker run --rm \
 
 After this run `git stash` as the `sail:install` command overrides the `docker-compose.yml` file.
 
+Now generate an application/app key: `./vendor/bin/sail artisan key:generate`.
+
 # Running
 
 Now you can do `./vendor/bin/sail up` (optionally pass in `-d` to daemonize the startup).
