@@ -91,9 +91,12 @@ Seeded:  Database\Seeders\OrderSeeder (1,123.71ms)
 Database seeding completed successfully.
 ```
 
-Security was the other aspect for/against this route.  Due to that, there are a couple of checks in place to first confirm the filename should be processed.  Then we check the first line of the CSV file against the fillable properties on the table model.  If there's any outliers then we throw an exception.
+Security was another concern when deciding on going this route.  Due to that, there are a couple of checks made to eleviate the concern.
 
-There's other cases that aren't considered (i.e.: a PNG being passed in), but given the control of these seeders is 1) by the developer only and 2) supposed to only be ran in non-production, as a MVP it does it's job well.
+First the filename is hardcoded for each seeder and confirmed prior to reading the file in.
+Second we check the header columns found in the file and compare that against the list of fillable model properties.
+
+If either of the above checks don't match, we throw an exception.
 
 **Q**: Unable to connect to MySQL via Sail
 
